@@ -12,19 +12,20 @@
   <div id="quoteDisplay">Click "Show New Quote" to get started!</div>
   <button id="newQuote">Show New Quote</button>
 
+  <!-- Category Filter -->
+  <div class="form-container">
+    <h2>Filter by Category</h2>
+    <select id="categoryFilter" onchange="filterQuotes()">
+      <option value="all">All Categories</option>
+    </select>
+  </div>
+
   <!-- Quote Addition Form -->
   <div class="form-container">
     <h2>Add a New Quote</h2>
     <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
     <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
     <button id="addQuoteButton">Add Quote</button>
-  </div>
-
-  <!-- JSON Import/Export Section -->
-  <div class="form-container">
-    <h2>Import/Export Quotes</h2>
-    <button id="exportQuotes">Export Quotes</button>
-    <input type="file" id="importFile" accept=".json" />
   </div>
 
   <script src="script.js"></script>
