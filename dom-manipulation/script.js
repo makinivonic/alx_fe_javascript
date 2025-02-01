@@ -70,22 +70,7 @@ async function addQuote() {
   newQuoteCategory.value = "";
   alert("Quote added successfully!");
 
-  // Send new quote to the server
-  try {
-    const response = await fetch("https://example.com/api/quotes", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(newQuote)
-    });
-    if (!response.ok) {
-      throw new Error("Failed to send quote to server");
-    }
-    console.log("Quote successfully sent to server");
-  } catch (error) {
-    console.error("Error sending quote to server:", error);
-  }
+  await syncQuotes(newQuote); // Sync the new quote to the server
 }
 
 // Function to filter quotes
@@ -103,6 +88,21 @@ async function fetchQuotesFromServer() {
   } catch (error) {
     console.error("Error fetching server quotes:", error);
     return [];
+  }
+}
+
+// Function to sync quotes with the server
+async function syncQuotes(newQuote) {
+  try {
+    await fetch("https://example.com/api/quotes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(newQuote)
+    });
+  } catch (error) {
+    console.error("Error syncing quote to server:", error);
   }
 }
 
