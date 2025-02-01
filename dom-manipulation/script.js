@@ -11,6 +11,7 @@ const addQuoteButton = document.getElementById("addQuoteButton");
 const newQuoteText = document.getElementById("newQuoteText");
 const newQuoteCategory = document.getElementById("newQuoteCategory");
 const categoryFilter = document.getElementById("categoryFilter");
+const conflictNotification = document.getElementById("conflictNotification");
 
 // Function to save quotes to local storage
 function saveQuotes() {
@@ -77,10 +78,59 @@ function filterQuotes() {
   showRandomQuote(); // Show a random quote from the selected category
 }
 
+// Function to simulate server interaction
+async function fetchServerQuotes() {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts"); // Simulated server data
+    const serverQuotes = await response.json();
+    return serverQuotes.map(quote => ({ text: quote.title, category: "General" })); // Simplified structure
+  } catch (error) {
+    console.error("Error fetching server quotes:", error);
+    return [];
+  }
+}
+
+// Function to sync data with the server and resolve conflicts
+async function syncWithServer() {
+  const serverQuotes = await fetchServerQuotes();
+
+  if (serverQuotes.length === 0) {
+    return;
+  }
+
+  // Check for conflicts by comparing local quotes and server quotes
+  let conflictDetected = false;
+
+  serverQuotes.forEach(serverQuote => {
+    const existingQuote = quotes.find(quote => quote.text === serverQuote.text);
+
+    if (!existingQuote) {
+      // New quote from the server, add it
+      quotes.push(serverQuote);
+      conflictDetected = true;
+    }
+  });
+
+  if (conflictDetected) {
+    saveQuotes();
+    conflictNotification.style.display = "block"; // Notify the user about the conflict
+  }
+}
+
 // Event listeners
 newQuoteButton.addEventListener("click", showRandomQuote);
 addQuoteButton.addEventListener("click", addQuote);
 
+// Conflict resolution notification click
+conflictNotification.addEventListener("click", () => {
+  // You can add more detailed conflict resolution logic here
+  alert("Manually resolve the conflict if needed.");
+  conflictNotification.style.display = "none";
+});
+
 // Initialize app
 populateCategories();
 showRandomQuote();
+
+// Sync quotes every 10 seconds
+setInterval(syncWithServer, 10000);
