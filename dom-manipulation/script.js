@@ -53,7 +53,7 @@ function showRandomQuote() {
 }
 
 // Function to add a new quote
-function addQuote() {
+async function addQuote() {
   const text = newQuoteText.value.trim();
   const category = newQuoteCategory.value.trim();
 
@@ -62,12 +62,30 @@ function addQuote() {
     return;
   }
 
-  quotes.push({ text, category });
+  const newQuote = { text, category };
+  quotes.push(newQuote);
   saveQuotes();
   populateCategories();
   newQuoteText.value = "";
   newQuoteCategory.value = "";
   alert("Quote added successfully!");
+
+  // Send new quote to the server
+  try {
+    const response = await fetch("https://example.com/api/quotes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(newQuote)
+    });
+    if (!response.ok) {
+      throw new Error("Failed to send quote to server");
+    }
+    console.log("Quote successfully sent to server");
+  } catch (error) {
+    console.error("Error sending quote to server:", error);
+  }
 }
 
 // Function to filter quotes
