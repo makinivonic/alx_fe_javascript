@@ -20,7 +20,7 @@ function saveQuotes() {
 
 // Function to populate category dropdown
 function populateCategories() {
-  const categories = [...new Set(quotes.map(quote => quote.category))]; // Unique categories
+  const categories = [...new Set(quotes.map(quote => quote.category))];
   categoryFilter.innerHTML = '<option value="all">All Categories</option>';
   categories.forEach(category => {
     const option = document.createElement("option");
@@ -28,8 +28,6 @@ function populateCategories() {
     option.textContent = category;
     categoryFilter.appendChild(option);
   });
-
-  // Restore last selected category
   const savedCategory = localStorage.getItem("selectedCategory");
   if (savedCategory) {
     categoryFilter.value = savedCategory;
@@ -66,7 +64,7 @@ function addQuote() {
 
   quotes.push({ text, category });
   saveQuotes();
-  populateCategories(); // Update categories in dropdown
+  populateCategories();
   newQuoteText.value = "";
   newQuoteCategory.value = "";
   alert("Quote added successfully!");
@@ -74,16 +72,16 @@ function addQuote() {
 
 // Function to filter quotes
 function filterQuotes() {
-  localStorage.setItem("selectedCategory", categoryFilter.value); // Save selected category
-  showRandomQuote(); // Show a random quote from the selected category
+  localStorage.setItem("selectedCategory", categoryFilter.value);
+  showRandomQuote();
 }
 
-// Function to simulate server interaction
-async function fetchServerQuotes() {
+// Function to fetch quotes from the server
+async function fetchQuotesFromServer() {
   try {
-    const response = await fetch("https://jsonplaceholder.typicode.com/posts"); // Simulated server data
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
     const serverQuotes = await response.json();
-    return serverQuotes.map(quote => ({ text: quote.title, category: "General" })); // Simplified structure
+    return serverQuotes.map(quote => ({ text: quote.title, category: "General" }));
   } catch (error) {
     console.error("Error fetching server quotes:", error);
     return [];
@@ -92,20 +90,18 @@ async function fetchServerQuotes() {
 
 // Function to sync data with the server and resolve conflicts
 async function syncWithServer() {
-  const serverQuotes = await fetchServerQuotes();
+  const serverQuotes = await fetchQuotesFromServer();
 
   if (serverQuotes.length === 0) {
     return;
   }
 
-  // Check for conflicts by comparing local quotes and server quotes
   let conflictDetected = false;
 
   serverQuotes.forEach(serverQuote => {
     const existingQuote = quotes.find(quote => quote.text === serverQuote.text);
 
     if (!existingQuote) {
-      // New quote from the server, add it
       quotes.push(serverQuote);
       conflictDetected = true;
     }
@@ -113,17 +109,15 @@ async function syncWithServer() {
 
   if (conflictDetected) {
     saveQuotes();
-    conflictNotification.style.display = "block"; // Notify the user about the conflict
+    conflictNotification.style.display = "block";
   }
 }
 
 // Event listeners
 newQuoteButton.addEventListener("click", showRandomQuote);
 addQuoteButton.addEventListener("click", addQuote);
-
-// Conflict resolution notification click
+categoryFilter.addEventListener("change", filterQuotes);
 conflictNotification.addEventListener("click", () => {
-  // You can add more detailed conflict resolution logic here
   alert("Manually resolve the conflict if needed.");
   conflictNotification.style.display = "none";
 });
@@ -131,6 +125,4 @@ conflictNotification.addEventListener("click", () => {
 // Initialize app
 populateCategories();
 showRandomQuote();
-
-// Sync quotes every 10 seconds
 setInterval(syncWithServer, 10000);
