@@ -129,6 +129,9 @@ async function syncWithServer() {
     saveQuotes();
     conflictNotification.style.display = "block";
   }
+
+  // Add this line to notify the user that quotes are synced with the server
+  alert("Quotes synced with server!");  // This will show the required message
 }
 
 // Event listeners
