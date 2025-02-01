@@ -7,6 +7,9 @@ const quotes = [
 
 const quoteDisplay = document.getElementById("quoteDisplay");
 const newQuoteButton = document.getElementById("newQuote");
+const addQuoteButton = document.getElementById("addQuoteButton");
+const newQuoteText = document.getElementById("newQuoteText");
+const newQuoteCategory = document.getElementById("newQuoteCategory");
 
 // Function to display a random quote
 function showRandomQuote() {
@@ -21,10 +24,6 @@ function showRandomQuote() {
 
 // Function to add a new quote
 function addQuote() {
-  // Get the input elements by their IDs
-  const newQuoteText = document.getElementById("newQuoteText");
-  const newQuoteCategory = document.getElementById("newQuoteCategory");
-
   const text = newQuoteText.value.trim();
   const category = newQuoteCategory.value.trim();
 
@@ -34,46 +33,11 @@ function addQuote() {
   }
 
   quotes.push({ text, category });
-  // Clear input fields after adding the quote
   newQuoteText.value = "";
   newQuoteCategory.value = "";
   alert("Quote added successfully!");
 }
 
-// Function to dynamically create the form for adding a new quote
-function createAddQuoteForm() {
-  // Create a container div for the form
-  const formDiv = document.createElement("div");
-  formDiv.id = "addQuoteForm";
-
-  // Create input for new quote text
-  const inputQuoteText = document.createElement("input");
-  inputQuoteText.type = "text";
-  inputQuoteText.id = "newQuoteText";
-  inputQuoteText.placeholder = "Enter a new quote";
-
-  // Create input for new quote category
-  const inputQuoteCategory = document.createElement("input");
-  inputQuoteCategory.type = "text";
-  inputQuoteCategory.id = "newQuoteCategory";
-  inputQuoteCategory.placeholder = "Enter quote category";
-
-  // Create the Add Quote button
-  const addQuoteBtn = document.createElement("button");
-  addQuoteBtn.textContent = "Add Quote";
-  addQuoteBtn.addEventListener("click", addQuote);
-
-  // Append inputs and button to the form container
-  formDiv.appendChild(inputQuoteText);
-  formDiv.appendChild(inputQuoteCategory);
-  formDiv.appendChild(addQuoteBtn);
-
-  // Append the form container to the body (or another container element)
-  document.body.appendChild(formDiv);
-}
-
 // Event listeners
 newQuoteButton.addEventListener("click", showRandomQuote);
-
-// Call createAddQuoteForm to build the form when the page loads
-createAddQuoteForm();
+addQuoteButton.addEventListener("click", addQuote);
